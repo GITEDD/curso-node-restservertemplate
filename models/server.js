@@ -1,6 +1,7 @@
 const { SERVFAIL } = require("dns");
 const express = require('express');
-const  cors = require('cors')
+const  cors = require('cors');
+const {dbConnection} = require('../database/config')
 
 require('dotenv').config();
 
@@ -12,6 +13,9 @@ class Server {
         this.port = process.env.PORT;
         this.usersPath ='/api/users';
 
+        //connection db
+        this.connectDB();
+
         //Middleware
         this.middlewares()
 
@@ -19,6 +23,10 @@ class Server {
         this.routes();
 
 
+    }
+    
+    async connectDB(){
+        await dbConnection()
     }
 
     middlewares() {
