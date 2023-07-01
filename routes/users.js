@@ -1,7 +1,13 @@
 const {Router} = require('express');
 const {usersGet, usersPost, usersPut, usersDelete, usersPatch} = require('../controllers/users');
 const { check } = require('express-validator');
-const {validateField}= require('../middleware/validate-field');
+
+const {
+    validateJWT, 
+    validateField,
+    isAdminRole,
+    hasRole} = require('../middleware');
+    
 const router = Router();
 const Role = require('../models/roles')
 const {isRoleValid, checkEmail, checkUserById} = require('../helpers/db-validators')
@@ -19,6 +25,8 @@ router.post('/',[
     validateField
 ],usersPost);
 
+router.post('/')
+
 router.put('/:id',[
     check('id', "Id not valid").isMongoId(),
     check('password',"The password must be 6 chars").isLength({min:6}),
@@ -29,7 +37,10 @@ router.put('/:id',[
 ] ,usersPut);
 
 router.delete('/:id',[
-    check('id', "Id not valid").isMongoId(),
+    validateJWT,
+    //isAdminRole,
+    hasRole('ADMIN_ROLE', 'VENTAS_ROLE'),
+    check('id', 'Id not valid').isMongoId(),
     check('id').custom(checkUserById),
     validateField
 ],usersDelete);

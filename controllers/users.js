@@ -64,13 +64,13 @@ const usersPut = async(req, res = response) => {
 const usersDelete = async(req, res = response) => {
 
     const id = req.params.id;
-    console.log('user delete',id)
-    const user = await User.findByIdAndUpdate(id,{status:false})
+    const userAuth = req.userAuth
+    const userDelete = await User.findByIdAndUpdate(id, { status:false })
 
     res.json({
         ok: true,
-        msg:'delete users api - controller',
-        user
+        userDelete,
+        userAuth
    })
 }
 
